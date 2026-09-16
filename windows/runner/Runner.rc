@@ -90,12 +90,12 @@ BEGIN
         BLOCK "040904e4"
         BEGIN
             VALUE "CompanyName", "com.idiomatic" "\0"
-            VALUE "FileDescription", "idiomatic_app" "\0"
+            VALUE "FileDescription", "Idiomatic" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
             VALUE "InternalName", "idiomatic_app" "\0"
             VALUE "LegalCopyright", "Copyright (C) 2026 com.idiomatic. All rights reserved." "\0"
             VALUE "OriginalFilename", "idiomatic_app.exe" "\0"
-            VALUE "ProductName", "idiomatic_app" "\0"
+            VALUE "ProductName", "Idiomatic" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END

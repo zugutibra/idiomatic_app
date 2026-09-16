@@ -1,6 +1,6 @@
 {
-    "name": "idiomatic_app",
-    "short_name": "idiomatic_app",
+    "name": "Idiomatic",
+    "short_name": "Idiomatic",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
