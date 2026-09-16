@@ -53,6 +53,15 @@ class _LoginPageState extends State<LoginPage> {
                       Center(
                         child: Column(
                           children: [
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(18),
+                              child: Image.asset(
+                                'assets/idiomatic-logo-255.png',
+                                width: 64,
+                                height: 64,
+                              ),
+                            ),
+                            const SizedBox(height: 12),
                             Text('Idiomatic', style: AppTheme.serifItalic(context, size: 42, color: colors.primary)),
                             const SizedBox(height: 8),
                             Text(

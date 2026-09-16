@@ -53,6 +53,17 @@ class _SignupPageState extends State<SignupPage> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
+                      Center(
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(16),
+                          child: Image.asset(
+                            'assets/idiomatic-logo-255.png',
+                            width: 56,
+                            height: 56,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 16),
                       Text('Create account', style: AppTheme.serifItalic(context, size: 30)),
                       const SizedBox(height: 6),
                       Text(
