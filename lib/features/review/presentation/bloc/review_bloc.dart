@@ -12,9 +12,8 @@ class ReviewBloc extends Bloc<ReviewEvent, ReviewState> {
   ReviewBloc({
     required this._getDueIdioms,
     required this._getNextDueAt,
-    required SubmitReview submitReview,
-  }) : _submitReview = submitReview,
-       super(const ReviewState()) {
+    required this._submitReview,
+  }) : super(const ReviewState()) {
     on<ReviewStarted>(_onStarted);
     on<ReviewCardFlipped>(_onFlipped);
     on<ReviewDragUpdated>(_onDragUpdated);
@@ -47,7 +46,12 @@ class ReviewBloc extends Bloc<ReviewEvent, ReviewState> {
       ),
       (idioms) async {
         if (idioms.isEmpty) {
-          emit(ReviewState(status: ReviewStatus.finished, nextDueAt: await _fetchNextDueAt()));
+          emit(
+            ReviewState(
+              status: ReviewStatus.finished,
+              nextDueAt: await _fetchNextDueAt(),
+            ),
+          );
         } else {
           emit(ReviewState(status: ReviewStatus.active, queue: idioms));
         }

@@ -10,11 +10,23 @@ class ProgressCubit extends Cubit<ProgressCubitState> {
   final GetProgressStats _getProgressStats;
 
   Future<void> load() async {
-    emit(state.copyWith(status: ProgressStatus.loading));
+    // If we already have data on screen, refresh silently in the background
+    // instead of blanking the page out with a spinner.
+    if (state.status == ProgressStatus.loaded) {
+      emit(state.copyWith(isRefreshing: true));
+    } else {
+      emit(state.copyWith(status: ProgressStatus.loading));
+    }
+
     final result = await _getProgressStats(const NoParams());
     result.match(
-      (failure) => emit(state.copyWith(status: ProgressStatus.error, errorMessage: failure.message)),
-      (stats) => emit(state.copyWith(status: ProgressStatus.loaded, stats: stats)),
+      (failure) => emit(
+        state.status == ProgressStatus.loaded
+            // Keep showing stale data if a silent refresh fails.
+            ? state.copyWith(isRefreshing: false)
+            : state.copyWith(status: ProgressStatus.error, errorMessage: failure.message),
+      ),
+      (stats) => emit(state.copyWith(status: ProgressStatus.loaded, stats: stats, isRefreshing: false)),
     );
   }
 }

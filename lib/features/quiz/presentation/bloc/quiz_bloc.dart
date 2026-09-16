@@ -8,9 +8,8 @@ import 'package:idiomatic_app/features/quiz/presentation/bloc/quiz_event.dart';
 import 'package:idiomatic_app/features/quiz/presentation/bloc/quiz_state.dart';
 
 class QuizBloc extends Bloc<QuizEvent, QuizState> {
-  QuizBloc({required this._getIdioms, required GetQuizOptions getQuizOptions})
-    : _getQuizOptions = getQuizOptions,
-      super(const QuizState()) {
+  QuizBloc({required this._getIdioms, required this._getQuizOptions})
+    : super(const QuizState()) {
     on<QuizStarted>(_onStarted);
     on<QuizAnswerSelected>(_onAnswerSelected);
     on<QuizNextQuestionRequested>(_onNextQuestion);

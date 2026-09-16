@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:idiomatic_app/core/di/injection_container.dart';
 import 'package:idiomatic_app/core/theme/app_theme.dart';
 import 'package:idiomatic_app/features/idioms/domain/entities/topic.dart';
 import 'package:idiomatic_app/features/idioms/presentation/bloc/browse_cubit.dart';
@@ -10,18 +9,6 @@ import 'package:idiomatic_app/features/review/presentation/pages/review_page.dar
 
 class BrowseTab extends StatelessWidget {
   const BrowseTab({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => sl<BrowseCubit>()..load(),
-      child: const _BrowseTabView(),
-    );
-  }
-}
-
-class _BrowseTabView extends StatelessWidget {
-  const _BrowseTabView();
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +27,18 @@ class _BrowseTabView extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Browse Topics', style: AppTheme.serifItalic(context, size: 26)),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text('Browse Topics', style: AppTheme.serifItalic(context, size: 26)),
+                  if (state.isRefreshing)
+                    SizedBox(
+                      width: 14,
+                      height: 14,
+                      child: CircularProgressIndicator(strokeWidth: 2, color: colors.textTertiary),
+                    ),
+                ],
+              ),
               const SizedBox(height: 5),
               Text('Explore idioms by category, anytime.', style: TextStyle(fontSize: 13, color: colors.textSecondary)),
               const SizedBox(height: 16),

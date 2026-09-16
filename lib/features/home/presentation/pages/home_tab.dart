@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:idiomatic_app/core/di/injection_container.dart';
 import 'package:idiomatic_app/core/theme/app_theme.dart';
 import 'package:idiomatic_app/core/theme/theme_cubit.dart';
 import 'package:idiomatic_app/features/auth/presentation/bloc/auth_bloc.dart';
@@ -21,18 +20,6 @@ String _greeting() {
 
 class HomeTab extends StatelessWidget {
   const HomeTab({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => sl<ProgressCubit>()..load(),
-      child: const _HomeTabView(),
-    );
-  }
-}
-
-class _HomeTabView extends StatelessWidget {
-  const _HomeTabView();
 
   @override
   Widget build(BuildContext context) {

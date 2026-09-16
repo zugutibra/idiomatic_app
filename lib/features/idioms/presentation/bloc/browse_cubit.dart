@@ -7,17 +7,20 @@ import 'package:idiomatic_app/features/idioms/presentation/bloc/browse_state.dar
 import 'package:idiomatic_app/features/progress/domain/usecases/get_progress_stats.dart';
 
 class BrowseCubit extends Cubit<BrowseState> {
-  BrowseCubit({
-    required this._getIdioms,
-    required GetProgressStats getProgressStats,
-  }) : _getProgressStats = getProgressStats,
-       super(const BrowseState());
+  BrowseCubit({required this._getIdioms, required this._getProgressStats})
+    : super(const BrowseState());
 
   final GetIdioms _getIdioms;
   final GetProgressStats _getProgressStats;
 
   Future<void> load() async {
-    emit(state.copyWith(status: BrowseStatus.loading));
+    // If we already have data on screen, refresh silently in the background
+    // instead of blanking the page out with a spinner.
+    if (state.status == BrowseStatus.loaded) {
+      emit(state.copyWith(isRefreshing: true));
+    } else {
+      emit(state.copyWith(status: BrowseStatus.loading));
+    }
 
     final idiomsResult = await _getIdioms(const GetIdiomsParams());
     final statsResult = await _getProgressStats(const NoParams());
@@ -48,6 +51,6 @@ class BrowseCubit extends Cubit<BrowseState> {
         )
         .toList();
 
-    emit(state.copyWith(status: BrowseStatus.loaded, topics: topics));
+    emit(state.copyWith(status: BrowseStatus.loaded, topics: topics, isRefreshing: false));
   }
 }

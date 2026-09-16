@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 
 import 'package:idiomatic_app/core/network/api_config.dart';
 import 'package:idiomatic_app/core/storage/token_storage.dart';
@@ -22,6 +23,22 @@ class DioClient {
             options.headers['Authorization'] = 'Bearer $token';
           }
           handler.next(options);
+        },
+        onResponse: (response, handler) {
+          debugPrint(
+            '[HTTP] ${response.requestOptions.method} '
+            '${response.requestOptions.uri} -> ${response.statusCode}\n'
+            '${response.data}',
+          );
+          handler.next(response);
+        },
+        onError: (error, handler) {
+          debugPrint(
+            '[HTTP] ${error.requestOptions.method} '
+            '${error.requestOptions.uri} -> ${error.response?.statusCode}\n'
+            '${error.response?.data ?? error.message}',
+          );
+          handler.next(error);
         },
       ),
     );

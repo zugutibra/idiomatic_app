@@ -9,10 +9,9 @@ import 'package:idiomatic_app/features/auth/presentation/bloc/auth_state.dart';
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   AuthBloc({
     required this._signup,
-    required Login login,
+    required this._login,
     required this._repository,
-  }) : _login = login,
-       super(const AuthState()) {
+  }) : super(const AuthState()) {
     on<AuthCheckRequested>(_onCheckRequested);
     on<AuthSignupRequested>(_onSignupRequested);
     on<AuthLoginRequested>(_onLoginRequested);

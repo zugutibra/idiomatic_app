@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:idiomatic_app/core/di/injection_container.dart';
 import 'package:idiomatic_app/core/theme/app_theme.dart';
 import 'package:idiomatic_app/features/idioms/domain/entities/topic.dart';
 import 'package:idiomatic_app/features/progress/presentation/bloc/progress_cubit.dart';
@@ -9,18 +8,6 @@ import 'package:idiomatic_app/features/progress/presentation/bloc/progress_state
 
 class ProgressTab extends StatelessWidget {
   const ProgressTab({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => sl<ProgressCubit>()..load(),
-      child: const _ProgressTabView(),
-    );
-  }
-}
-
-class _ProgressTabView extends StatelessWidget {
-  const _ProgressTabView();
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +28,18 @@ class _ProgressTabView extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Your Progress', style: AppTheme.serifItalic(context, size: 26)),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text('Your Progress', style: AppTheme.serifItalic(context, size: 26)),
+                  if (state.isRefreshing)
+                    SizedBox(
+                      width: 14,
+                      height: 14,
+                      child: CircularProgressIndicator(strokeWidth: 2, color: colors.textTertiary),
+                    ),
+                ],
+              ),
               const SizedBox(height: 5),
               Text("Keep going — you're building real fluency.", style: TextStyle(fontSize: 13, color: colors.textSecondary)),
               const SizedBox(height: 16),

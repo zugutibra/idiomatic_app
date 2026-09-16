@@ -61,9 +61,13 @@ Future<void> initDependencies() async {
   sl.registerLazySingleton<ProgressRepository>(() => ProgressRepositoryImpl(sl()));
   sl.registerLazySingleton(() => GetProgressStats(sl()));
 
-  // ---- Presentation-layer blocs/cubits (factories: fresh instance per page) ----
+  // ---- Presentation-layer blocs/cubits ----
+  // Review/Quiz are per-visit flows: fresh instance every time the page opens.
   sl.registerFactory(() => ReviewBloc(getDueIdioms: sl(), getNextDueAt: sl(), submitReview: sl()));
   sl.registerFactory(() => QuizBloc(getIdioms: sl(), getQuizOptions: sl()));
-  sl.registerFactory(() => ProgressCubit(sl()));
-  sl.registerFactory(() => BrowseCubit(getIdioms: sl(), getProgressStats: sl()));
+  // Progress/Browse back the bottom-nav tabs, which stay alive for the whole
+  // session, so they're singletons: switching tabs re-uses cached state and
+  // triggers a silent background refresh instead of a full reload.
+  sl.registerLazySingleton(() => ProgressCubit(sl()));
+  sl.registerLazySingleton(() => BrowseCubit(getIdioms: sl(), getProgressStats: sl()));
 }

@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'package:idiomatic_app/core/di/injection_container.dart';
 import 'package:idiomatic_app/core/theme/app_theme.dart';
 import 'package:idiomatic_app/features/home/presentation/pages/home_tab.dart';
+import 'package:idiomatic_app/features/idioms/presentation/bloc/browse_cubit.dart';
 import 'package:idiomatic_app/features/idioms/presentation/pages/browse_tab.dart';
+import 'package:idiomatic_app/features/progress/presentation/bloc/progress_cubit.dart';
 import 'package:idiomatic_app/features/progress/presentation/pages/progress_tab.dart';
 
 class HomeShell extends StatefulWidget {
@@ -21,38 +25,58 @@ class _HomeShellState extends State<HomeShell> {
     (icon: Icons.bar_chart_outlined, activeIcon: Icons.bar_chart, label: 'Progress'),
   ];
 
+  late final ProgressCubit _progressCubit = sl<ProgressCubit>()..load();
+  late final BrowseCubit _browseCubit = sl<BrowseCubit>()..load();
+
+  void _selectTab(int index) {
+    if (index == _tabIndex) return;
+    setState(() => _tabIndex = index);
+    // Tab bodies stay alive (IndexedStack) so this is a background refresh:
+    // the cubit already has cached data and just re-fetches silently.
+    if (index == 1) {
+      _browseCubit.load();
+    } else if (index == 2) {
+      _progressCubit.load();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final colors = AppTheme.colorsOf(context);
-    return Scaffold(
-      body: SafeArea(
-        child: switch (_tabIndex) {
-          0 => const HomeTab(),
-          1 => const BrowseTab(),
-          _ => const ProgressTab(),
-        },
-      ),
-      bottomNavigationBar: Container(
-        padding: const EdgeInsets.fromLTRB(8, 10, 8, 20),
-        decoration: BoxDecoration(color: colors.surface, border: Border(top: BorderSide(color: colors.border))),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: List.generate(_tabs.length, (i) {
-            final tab = _tabs[i];
-            final active = i == _tabIndex;
-            final color = active ? colors.primary : colors.textTertiary;
-            return GestureDetector(
-              onTap: () => setState(() => _tabIndex = i),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(active ? tab.activeIcon : tab.icon, size: 20, color: color),
-                  const SizedBox(height: 3),
-                  Text(tab.label, style: TextStyle(fontSize: 10, fontWeight: FontWeight.w700, color: color)),
-                ],
-              ),
-            );
-          }),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider.value(value: _progressCubit),
+        BlocProvider.value(value: _browseCubit),
+      ],
+      child: Scaffold(
+        body: SafeArea(
+          child: IndexedStack(
+            index: _tabIndex,
+            children: const [HomeTab(), BrowseTab(), ProgressTab()],
+          ),
+        ),
+        bottomNavigationBar: Container(
+          padding: const EdgeInsets.fromLTRB(8, 10, 8, 20),
+          decoration: BoxDecoration(color: colors.surface, border: Border(top: BorderSide(color: colors.border))),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: List.generate(_tabs.length, (i) {
+              final tab = _tabs[i];
+              final active = i == _tabIndex;
+              final color = active ? colors.primary : colors.textTertiary;
+              return GestureDetector(
+                onTap: () => _selectTab(i),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(active ? tab.activeIcon : tab.icon, size: 20, color: color),
+                    const SizedBox(height: 3),
+                    Text(tab.label, style: TextStyle(fontSize: 10, fontWeight: FontWeight.w700, color: color)),
+                  ],
+                ),
+              );
+            }),
+          ),
         ),
       ),
     );
